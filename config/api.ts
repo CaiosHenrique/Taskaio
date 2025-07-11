@@ -1,8 +1,7 @@
 // Configurações da API
 export const API_CONFIG = {
-  // Para teste no simulador/emulador, use localhost
-  // Para teste em device físico, use o IP da sua máquina
-  BASE_URL: __DEV__ ? 'http://localhost:8000' : 'https://your-api-url.com',
+  // URL do backend em produção
+  BASE_URL: 'https://taskaioapi.onrender.com',
   
   // Timeout para requisições (em milissegundos)
   TIMEOUT: 10000,
