@@ -41,12 +41,12 @@ class TaskService {
   // Método para testar conectividade com o backend
   async testConnection(): Promise<boolean> {
     try {
-      console.log('🔗 Testando conexão com:', API_URL);
+      //console.log('🔗 Testando conexão com:', API_URL);
       const response = await fetch(API_URL, { method: 'GET' });
-      console.log('📡 Status da conexão:', response.status);
+      //console.log('📡 Status da conexão:', response.status);
       return response.ok;
     } catch (error) {
-      console.error('❌ Erro de conexão:', error);
+      //console.error('❌ Erro de conexão:', error);
       return false;
     }
   }
@@ -86,74 +86,74 @@ class TaskService {
       
       return await response.json();
     } catch (error) {
-      console.error('API request failed:', error);
+      //console.error('API request failed:', error);
       throw error;
     }
   }
 
   async getTasks(): Promise<Task[]> {
-    console.log('🔍 Iniciando carregamento de tasks...');
-    console.log('🌐 API_URL:', API_URL);
+    //console.log('🔍 Iniciando carregamento de tasks...');
+    //console.log('🌐 API_URL:', API_URL);
     
     // Primeiro, testar a conexão
     const isConnected = await this.testConnection();
-    console.log('🔗 Conexão com backend:', isConnected ? 'OK' : 'FALHOU');
+    //console.log('🔗 Conexão com backend:', isConnected ? 'OK' : 'FALHOU');
     
     if (!isConnected) {
-      console.warn('🔄 Backend não disponível, usando dados de fallback');
+      //console.warn('🔄 Backend não disponível, usando dados de fallback');
       this.initializeTaskIdCounter(fallbackTasks);
       return fallbackTasks;
     }
     
     try {
-      console.log('📡 Fazendo requisição para /tasks...');
+      //console.log('📡 Fazendo requisição para /tasks...');
       const tasks = await this.request<Task[]>('/tasks');
-      console.log('✅ Resposta da API recebida:', tasks);
-      console.log('✅ Tipo da resposta:', typeof tasks, Array.isArray(tasks));
+      //console.log('✅ Resposta da API recebida:', tasks);
+      //console.log('✅ Tipo da resposta:', typeof tasks, Array.isArray(tasks));
       
       // Temporariamente, vamos aceitar qualquer task e ver o que acontece
       const validTasks = Array.isArray(tasks) ? tasks : [];
-      console.log('✅ Tasks após verificação de array:', validTasks);
+      //console.log('✅ Tasks após verificação de array:', validTasks);
       
       // Transformar tasks com id null para string
       const normalizedTasks = validTasks.map(task => ({
         ...task,
         id: task.id || `task-${task.task_id}` // Gerar id se for null
       }));
-      console.log('✅ Tasks após normalização:', normalizedTasks);
+      //console.log('✅ Tasks após normalização:', normalizedTasks);
       
       // Aplicar filtro de validação
-      console.log('🔍 Iniciando validação das tasks...');
+      //console.log('🔍 Iniciando validação das tasks...');
       const filteredTasks = filterValidTasks(normalizedTasks);
-      console.log('✅ Tasks válidas após filtro:', filteredTasks.length);
-      console.log('❌ Tasks inválidas:', normalizedTasks.length - filteredTasks.length);
+      //console.log('✅ Tasks válidas após filtro:', filteredTasks.length);
+      //console.log('❌ Tasks inválidas:', normalizedTasks.length - filteredTasks.length);
       
       // Se não há tasks válidas, mas há tasks na resposta, mostrar detalhes
       if (filteredTasks.length === 0 && normalizedTasks.length > 0) {
-        console.log('⚠️ Nenhuma task passou na validação. Exemplos de tasks recebidas:');
+        //console.log('⚠️ Nenhuma task passou na validação. Exemplos de tasks recebidas:');
         normalizedTasks.slice(0, 2).forEach((task, index) => {
-          console.log(`Task ${index + 1}:`, JSON.stringify(task, null, 2));
+          //console.log(`Task ${index + 1}:`, JSON.stringify(task, null, 2));
         });
       }
       
       // Mostrar as tasks válidas
       if (filteredTasks.length > 0) {
-        console.log('✅ Tasks válidas encontradas:');
+        //console.log('✅ Tasks válidas encontradas:');
         filteredTasks.forEach((task, index) => {
-          console.log(`  ${index + 1}. [${task.task_id}] ${task.title} (done: ${task.done})`);
+          //console.log(`  ${index + 1}. [${task.task_id}] ${task.title} (done: ${task.done})`);
         });
       }
       
       this.initializeTaskIdCounter(filteredTasks);
-      console.log('✅ Retornando tasks válidas:', filteredTasks.length, 'tasks');
+      //console.log('✅ Retornando tasks válidas:', filteredTasks.length, 'tasks');
       
       return filteredTasks;
     } catch (error) {
-      console.error('❌ Erro ao carregar tasks da API:', error);
-      console.warn('🔄 Usando dados de fallback devido ao erro');
+      //console.error('❌ Erro ao carregar tasks da API:', error);
+      //console.warn('🔄 Usando dados de fallback devido ao erro');
       
       this.initializeTaskIdCounter(fallbackTasks);
-      console.log('✅ Retornando fallback tasks:', fallbackTasks.length, 'tasks');
+      //console.log('✅ Retornando fallback tasks:', fallbackTasks.length, 'tasks');
       
       return fallbackTasks;
     }
@@ -179,7 +179,7 @@ class TaskService {
         body: JSON.stringify(taskWithId),
       });
     } catch (error) {
-      console.warn('API não disponível, simulando criação de task:', error);
+      //console.warn('API não disponível, simulando criação de task:', error);
       const newTaskId = this.getNextTaskId();
       const sanitizedTitle = sanitizeTaskTitle(task.title);
       const newTask: Task = {
@@ -202,7 +202,7 @@ class TaskService {
         body: JSON.stringify(task),
       });
     } catch {
-      console.warn('API não disponível, simulando atualização de task');
+      //console.warn('API não disponível, simulando atualização de task');
       // Simular atualização local
       const existingTask = fallbackTasks.find(t => t.id === id || t.task_id.toString() === id);
       if (existingTask) {
@@ -218,11 +218,11 @@ class TaskService {
 
   async deleteTask(id: string): Promise<void> {
     try {
-      return await this.request<void>(`/tasks/${id}`, {
+      return await this.request<void>(`/${id}`, {
         method: 'DELETE',
       });
     } catch {
-      console.warn('API não disponível, simulando exclusão de task');
+      //console.warn('API não disponível, simulando exclusão de task');
       // Simular exclusão local
       return;
     }
